@@ -1,1594 +1,0 @@
-<!DOCTYPE html>
-<html lang="ar">
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>سين جيم العراق</title>
-    
-    <!-- إضافة مكتبة Howler.js للأصوات -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.min.js"></script>
-    
-    <style>
-        :root {
-            --maroon: #6e0f1f;
-            --maroon-dark: #4a0810;
-            --gold: #d4b24a;
-            --gold-light: #e9da82;
-            --bg1: #2a0f12;
-            --bg2: #17060a;
-            --glass: rgba(255,255,255,0.03);
-            --success: #2e7d32;
-            --warning: #ed6c02;
-            --error: #d32f2f;
-            --blue: #1e4f81;
-            --blue-light: #2b6aa6;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            margin: 0; 
-            min-height: 100vh;
-            font-family: "Segoe UI", Tahoma, "Noto Sans Arabic", sans-serif;
-            background: linear-gradient(180deg, var(--bg1), var(--bg2));
-            color: #f3efe9; 
-            direction: rtl; 
-            -webkit-font-smoothing: antialiased;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            padding: 10px;
-        }
-        
-        .app {
-            width: 100%;
-            max-width: 100%; 
-            border-radius: 14px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-            box-shadow: 0 18px 60px rgba(0,0,0,0.6);
-            overflow: hidden;
-            position: relative;
-        }
-        
-        .header {
-            background: linear-gradient(90deg, var(--maroon), var(--maroon-dark));
-            padding: 15px; 
-            display: flex; 
-            gap: 12px; 
-            align-items: center;
-        }
-        
-        .logo {
-            width: 60px;
-            height: 60px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgba(255,255,255,0.1);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.5);
-            flex-shrink: 0;
-            overflow: hidden;
-            background: rgba(255,255,255,0.05);
-        }
-        
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 10px;
-        }
-        
-        .header-text {
-            flex: 1;
-        }
-        
-        .title {
-            font-size: 18px;
-            color: var(--gold);
-            font-weight: 800;
-        }
-        
-        .subtitle {
-            color: rgba(243,239,233,0.85);
-            opacity: .9;
-            font-size: 12px;
-        }
-        
-        .screen {
-            display: none;
-            padding: 15px;
-            min-height: 500px;
-        }
-        
-        .screen.active {
-            display: block;
-        }
-        
-        /* إعدادات اللعبة */
-        .setup-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .setup-panel {
-            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-        
-        .setup-panel h2 {
-            color: var(--gold);
-            margin-bottom: 15px;
-            font-size: 18px;
-        }
-        
-        .input-group {
-            margin-bottom: 15px;
-        }
-        
-        .label {
-            font-size: 13px;
-            color: #e9e0d7;
-            margin-bottom: 6px;
-            display: block;
-        }
-        
-        .input {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.04);
-            background: transparent;
-            color: #fff;
-            font-size: 14px;
-        }
-        
-        .categories-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        
-        .category-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: 8px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-align: center;
-        }
-        
-        .category-card:hover {
-            background: rgba(255,255,255,0.05);
-            transform: translateY(-2px);
-        }
-        
-        .category-card.selected {
-            background: rgba(110, 15, 31, 0.3);
-            border-color: var(--gold);
-        }
-        
-        .category-icon {
-            font-size: 20px;
-            margin-bottom: 6px;
-        }
-        
-        .category-name {
-            font-size: 13px;
-            font-weight: 600;
-        }
-        
-        .category-desc {
-            font-size: 10px;
-            color: #d9d1c8;
-            margin-top: 4px;
-        }
-        
-        .btn {
-            padding: 12px 18px;
-            border-radius: 10px;
-            border: 0;
-            cursor: pointer;
-            font-weight: 800;
-            transition: all 0.2s;
-            font-family: inherit;
-            font-size: 14px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(90deg, var(--gold), var(--gold-light));
-            color: #222;
-            box-shadow: 0 8px 22px rgba(212,178,74,0.12);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(212,178,74,0.2);
-        }
-        
-        .btn-secondary {
-            background: linear-gradient(90deg, var(--blue), var(--blue-light));
-            color: #fff;
-        }
-        
-        .btn-secondary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(43,106,166,0.2);
-        }
-        
-        .btn-large {
-            padding: 15px 25px;
-            font-size: 16px;
-        }
-        
-        .actions {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        /* واجهة اللعبة */
-        .game-container {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-        
-        .game-panel {
-            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-        
-        .scoreboard {
-            display: flex;
-            gap: 10px;
-            width: 100%;
-            justify-content: space-between;
-        }
-        
-        .team-card {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.02), transparent);
-            text-align: center;
-        }
-        
-        .team-name {
-            font-weight: 800;
-            color: var(--gold);
-            font-size: 14px;
-        }
-        
-        .team-score {
-            font-size: 24px;
-            margin-top: 6px;
-        }
-        
-        .question-box {
-            width: 100%;
-            min-height: 120px;
-            border-radius: 12px;
-            padding: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            font-size: 18px;
-            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-            border: 1px solid rgba(255,255,255,0.03);
-            box-shadow: inset 0 -6px 20px rgba(0,0,0,0.25);
-            margin-bottom: 10px;
-        }
-        
-        .answer {
-            margin-top: 8px;
-            font-size: 16px;
-            color: var(--gold);
-            font-weight: 800;
-            opacity: 0;
-            transition: opacity .18s;
-            text-align: center;
-        }
-        
-        .controls {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            width: 100%;
-            align-items: center;
-        }
-        
-        .after-reveal {
-            display: none;
-            width: 100%;
-            flex-direction: column;
-            gap: 8px;
-            justify-content: center;
-        }
-        
-        .btn-team {
-            background: linear-gradient(90deg, #2b6aa6, #1e4f81);
-            color: #fff;
-            width: 100%;
-        }
-        
-        .btn-team:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(43,106,166,0.2);
-        }
-        
-        .btn-team.b2 {
-            background: linear-gradient(90deg, #b83d3d, #8b2323);
-            color: #fff;
-        }
-        
-        .btn-team.b2:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(184,61,61,0.2);
-        }
-        
-        .btn-none {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.06);
-            color: #ddd;
-            width: 100%;
-        }
-        
-        .btn-none:hover {
-            background: rgba(255,255,255,0.05);
-            transform: translateY(-2px);
-        }
-        
-        .meta {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            color: #d8cec4;
-            font-size: 12px;
-            margin-top: 6px;
-        }
-        
-        .counter {
-            font-size: 12px;
-            color: #e6dac4;
-        }
-        
-        .footer {
-            display: flex;
-            gap: 8px;
-            justify-content: space-between;
-            margin-top: 10px;
-        }
-        
-        .footer-btn {
-            flex: 1;
-            padding: 10px;
-            font-size: 12px;
-        }
-        
-        /* التايمر */
-        .timer-container {
-            width: 100%;
-            margin: 10px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .timer {
-            width: 100%;
-            height: 8px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        
-        .timer-progress {
-            height: 100%;
-            width: 100%;
-            background: linear-gradient(90deg, var(--success), var(--gold));
-            transition: width 1s linear;
-        }
-        
-        .timer-label {
-            font-size: 12px;
-            color: #d8cec4;
-        }
-        
-        /* صعوبة الأسئلة */
-        .difficulty-badge {
-            display: inline-block;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: bold;
-            margin-right: 8px;
-        }
-        
-        .difficulty-easy {
-            background: var(--success);
-            color: white;
-        }
-        
-        .difficulty-medium {
-            background: var(--warning);
-            color: white;
-        }
-        
-        .difficulty-hard {
-            background: var(--error);
-            color: white;
-        }
-        
-        /* نافذة النهاية */
-        .end-game-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            backdrop-filter: blur(4px);
-            padding: 15px;
-        }
-        
-        .end-game-content {
-            background: linear-gradient(180deg, var(--bg1), var(--bg2));
-            padding: 25px;
-            border-radius: 16px;
-            text-align: center;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        
-        .winner-trophy {
-            font-size: 50px;
-            margin-bottom: 15px;
-        }
-        
-        .winner-name {
-            font-size: 22px;
-            color: var(--gold);
-            margin-bottom: 10px;
-        }
-        
-        .final-score {
-            font-size: 18px;
-            margin-bottom: 20px;
-            color: #e7dcc0;
-        }
-        
-        /* نافذة إضافة الأسئلة */
-        .add-questions-modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            backdrop-filter: blur(4px);
-            padding: 15px;
-        }
-        
-        .add-questions-content {
-            background: linear-gradient(180deg, var(--bg1), var(--bg2));
-            padding: 20px;
-            border-radius: 16px;
-            text-align: right;
-            max-width: 500px;
-            width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.7);
-            border: 1px solid rgba(255,255,255,0.05);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-        
-        /* إعدادات الصوت */
-        .sound-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 10px;
-            padding: 10px;
-            background: rgba(255,255,255,0.02);
-            border-radius: 8px;
-        }
-        
-        .sound-toggle {
-            background: transparent;
-            border: none;
-            color: var(--gold);
-            font-size: 20px;
-            cursor: pointer;
-            padding: 5px;
-        }
-        
-        /* animations */
-        .reveal-anim {
-            animation: pop .28s ease;
-        }
-        
-        @keyframes pop {
-            0% { transform: scale(.96); opacity: 0; }
-            60% { transform: scale(1.02); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse {
-            animation: pulse 1.5s infinite;
-        }
-        
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        /* تحسينات للشاشات الكبيرة */
-        @media (min-width: 768px) {
-            .app {
-                width: 90%;
-                max-width: 1000px;
-            }
-            
-            .header {
-                padding: 18px 22px;
-            }
-            
-            .logo {
-                width: 70px;
-                height: 70px;
-            }
-            
-            .title {
-                font-size: 20px;
-            }
-            
-            .subtitle {
-                font-size: 13px;
-            }
-            
-            .screen {
-                padding: 20px;
-            }
-            
-            .setup-container {
-                display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
-            }
-            
-            .categories-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            
-            .actions {
-                flex-direction: row;
-                margin-top: 20px;
-            }
-            
-            .after-reveal {
-                flex-direction: row;
-            }
-            
-            .btn-team, .btn-none {
-                width: auto;
-                min-width: 160px;
-            }
-            
-            .footer {
-                justify-content: flex-end;
-            }
-            
-            .footer-btn {
-                flex: 0 1 auto;
-            }
-            
-            .question-box {
-                font-size: 22px;
-                min-height: 140px;
-                padding: 22px;
-            }
-            
-            .team-score {
-                font-size: 28px;
-            }
-        }
-    </style>
-
-<!-- تحسين ظهور الموقع في محركات البحث -->
-<meta name="description" content="سين جيم العراق - لعبة تحديات وأسئلة عراقية ممتعة مع أصدقائك. اختبر معلوماتك في التاريخ، الثقافة، الرياضة، والفن.">
-<meta name="keywords" content="سين جيم العراق, لعبة أسئلة, تحدي الأصدقاء, أسئلة عامة, كرار, لعبة عراقية, GitHub, Quiz Game">
-<meta name="author" content="كرار">
-<meta name="robots" content="index, follow">
-
-<!-- بيانات السوشيال (Open Graph) -->
-<meta property="og:title" content="سين جيم العراق - لعبة تحديات وأسئلة">
-<meta property="og:description" content="تحدى أصدقاءك في سين جيم العراق! لعبة أسئلة ممتعة ومجانية من صنع كرار.">
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://siudurtsche-rgb.github.io/seenjeemiraq/">
-<meta property="og:image" content="https://i.ibb.co/Tx8-WQjBS/432516080-1138963294373482-7098691259242352439-n.jpg">
-
-<!-- تحسين ظهور الموقع في الأجهزة المحمولة -->
-<meta name="theme-color" content="#6e0f1f">
-
-<!-- خريطة الموقع (sitemap) -->
-<link rel="sitemap" type="application/xml" title="Sitemap" href="https://siudurtsche-rgb.github.io/seenjeemiraq/sitemap.xml">
-
-<!-- أيقونة التبويب -->
-<link rel="icon" href="https://i.ibb.co/Tx8-WQjBS/432516080-1138963294373482-7098691259242352439-n.jpg" type="image/png">
-
-</head>
-<body>
-    <div class="app" role="application" aria-label="سين جيم العراق">
-        <div class="header">
-            <div class="logo" title="سين جيم العراق">
-                <!-- اللوجو الجديد -->
-                <img src="https://i.ibb.co/Tx8-WQjBS/432516080-1138963294373482-7098691259242352439-n.jpg" alt="سين جيم العراق">
-            </div>
-            <div class="header-text">
-                <div class="title">سين جيم العراق</div>
-                <div class="subtitle">لعبة الأسئلة والأجوبة التفاعلية</div>
-            </div>
-        </div>
-
-        <!-- شاشة الإعدادات -->
-        <div id="setupScreen" class="screen active">
-            <div class="setup-container">
-                <div class="setup-panel">
-                    <h2>إعدادات الفريقين</h2>
-                    <div class="input-group">
-                        <label class="label">اسم الفريق الأول</label>
-                        <input id="teamA" class="input" value="الفريق الأحمر" />
-                    </div>
-                    <div class="input-group">
-                        <label class="label">اسم الفريق الثاني</label>
-                        <input id="teamB" class="input" value="الفريق الأزرق" />
-                    </div>
-                    <div class="input-group">
-                        <label class="label">عدد الأسئلة</label>
-                        <select id="questionCount" class="input">
-                            <option value="5">5 أسئلة</option>
-                            <option value="10">10 أسئلة</option>
-                            <option value="15">15 أسئلة</option>
-                            <option value="20" selected>20 أسئلة</option>
-                        </select>
-                    </div>
-                    <div class="input-group">
-                        <label class="label">وقت الإجابة (بالثواني)</label>
-                        <select id="timerDuration" class="input">
-                            <option value="15">15 ثانية</option>
-                            <option value="20">20 ثانية</option>
-                            <option value="30" selected>30 ثانية</option>
-                            <option value="45">45 ثانية</option>
-                        </select>
-                    </div>
-                    
-                    <!-- إعدادات الصوت -->
-                    <div class="sound-controls">
-                        <button id="soundToggle" class="sound-toggle">🔊</button>
-                        <span class="label">تشغيل/إيقاف الصوت</span>
-                        <div id="soundStatus" class="label" style="color: var(--gold); margin-right: auto;">✓ الأصوات جاهزة</div>
-                    </div>
-                </div>
-
-                <div class="setup-panel">
-                    <h2>اختيار الفئات</h2>
-                    <p class="label">اختر الفئات التي تريدها (يمكنك اختيار أكثر من فئة)</p>
-                    <div class="categories-grid">
-                        <div class="category-card selected" data-category="عامة">
-                            <div class="category-icon">❓</div>
-                            <div class="category-name">أسئلة عامة</div>
-                            <div class="category-desc">أسئلة متنوعة في مختلف المجالات</div>
-                        </div>
-                        <div class="category-card selected" data-category="تاريخ">
-                            <div class="category-icon">🏛️</div>
-                            <div class="category-name">التاريخ</div>
-                            <div class="category-desc">أحداث وشخصيات تاريخية</div>
-                        </div>
-                        <div class="category-card selected" data-category="علوم">
-                            <div class="category-icon">🔬</div>
-                            <div class="category-name">العلوم</div>
-                            <div class="category-desc">اكتشافات ومعلومات علمية</div>
-                        </div>
-                        <div class="category-card selected" data-category="جغرافيا">
-                            <div class="category-icon">🌍</div>
-                            <div class="category-name">الجغرافيا</div>
-                            <div class="category-desc">دول، عواصم، ومعالم</div>
-                        </div>
-                        <div class="category-card" data-category="رياضة">
-                            <div class="category-icon">⚽</div>
-                            <div class="category-name">الرياضة</div>
-                            <div class="category-desc">ألعاب رياضية وبطولات</div>
-                        </div>
-                        <div class="category-card" data-category="فن">
-                            <div class="category-icon">🎭</div>
-                            <div class="category-name">فن وترفيه</div>
-                            <div class="category-desc">أفلام، موسيقى، وفنانون</div>
-                        </div>
-                        <div class="category-card" data-category="ثقافة">
-                            <div class="category-icon">📚</div>
-                            <div class="category-name">ثقافة عامة</div>
-                            <div class="category-desc">معلومات ثقافية متنوعة</div>
-                        </div>
-                        <div class="category-card" data-category="تكنولوجيا">
-                            <div class="category-icon">💻</div>
-                            <div class="category-name">تكنولوجيا</div>
-                            <div class="category-desc">تقنيات وابتكارات حديثة</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="actions">
-                <button id="startGameBtn" class="btn btn-primary btn-large">بدء اللعبة</button>
-                <button id="addQuestionsBtn" class="btn btn-secondary">إضافة أسئلة جديدة</button>
-            </div>
-        </div>
-
-        <!-- شاشة اللعبة -->
-        <div id="gameScreen" class="screen">
-            <div class="game-container">
-                <div class="game-panel">
-                    <div class="timer-container" id="timerContainer">
-                        <div class="timer">
-                            <div class="timer-progress" id="timerProgress"></div>
-                        </div>
-                        <div class="timer-label" id="timerLabel">30 ثانية</div>
-                    </div>
-
-                    <div class="scoreboard">
-                        <div class="team-card">
-                            <div class="team-name" id="showTeamA">الفريق الأحمر</div>
-                            <div class="team-score" id="scoreA">0</div>
-                        </div>
-                        <div class="team-card">
-                            <div class="team-name" id="showTeamB">الفريق الأزرق</div>
-                            <div class="team-score" id="scoreB">0</div>
-                        </div>
-                    </div>
-
-                    <div class="question-box" id="questionBox">اضغط "بدء اللعبة" للبدء</div>
-                    <div class="answer" id="answerBox" aria-live="polite"></div>
-
-                    <div class="controls">
-                        <button id="revealBtn" class="btn btn-primary">أظهر الجواب</button>
-
-                        <div id="afterReveal" class="after-reveal">
-                            <button id="teamABtn" class="btn btn-team">✅ فريق 1 جاوب</button>
-                            <button id="teamBBtn" class="btn btn-team b2">✅ فريق 2 جاوب</button>
-                            <button id="noneBtn" class="btn btn-none">❌ محد جاوب</button>
-                        </div>
-
-                        <div class="meta">
-                            <div class="counter">السؤال <span id="qIndex">0</span> / <span id="qTotal">0</span></div>
-                            <div class="counter" id="catShow">—</div>
-                        </div>
-                    </div>
-
-                    <div class="footer">
-                        <button id="prevBtn" class="btn btn-none footer-btn">رجوع</button>
-                        <button id="nextBtn" class="btn btn-none footer-btn">تخطي</button>
-                        <button id="backToSetupBtn" class="btn btn-none footer-btn">العودة للإعدادات</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- نافذة النهاية -->
-    <div id="endGameModal" class="end-game-modal" style="display: none;">
-        <div class="end-game-content">
-            <div class="winner-trophy" id="winnerTrophy">🏆</div>
-            <div class="winner-name" id="winnerName"></div>
-            <div class="final-score" id="finalScore"></div>
-            <button id="playAgainBtn" class="btn btn-primary">العب مرة أخرى</button>
-        </div>
-    </div>
-
-    <!-- نافذة إضافة الأسئلة -->
-    <div id="addQuestionsModal" class="add-questions-modal">
-        <div class="add-questions-content">
-            <h2 style="color: var(--gold); margin-bottom: 20px; text-align: center;">إضافة سؤال جديد</h2>
-            <div class="input-group">
-                <label class="label">السؤال</label>
-                <textarea id="newQuestion" class="input" rows="3" placeholder="اكتب السؤال هنا"></textarea>
-            </div>
-            <div class="input-group">
-                <label class="label">الإجابة</label>
-                <input type="text" id="newAnswer" class="input" placeholder="الإجابة">
-            </div>
-            <div class="input-group">
-                <label class="label">الفئة</label>
-                <select id="newCategory" class="input">
-                    <option value="عامة">أسئلة عامة</option>
-                    <option value="تاريخ">التاريخ</option>
-                    <option value="علوم">العلوم</option>
-                    <option value="جغرافيا">الجغرافيا</option>
-                    <option value="رياضة">الرياضة</option>
-                    <option value="فن">فن وترفيه</option>
-                    <option value="ثقافة">ثقافة عامة</option>
-                    <option value="تكنولوجيا">تكنولوجيا</option>
-                </select>
-            </div>
-            <div class="input-group">
-                <label class="label">الصعوبة</label>
-                <select id="newDifficulty" class="input">
-                    <option value="easy">سهل</option>
-                    <option value="medium">متوسط</option>
-                    <option value="hard">صعب</option>
-                </select>
-            </div>
-            <div class="actions" style="margin-top: 20px;">
-                <button id="saveQuestionBtn" class="btn btn-primary">حفظ السؤال</button>
-                <button id="cancelAddQuestionBtn" class="btn btn-none">إلغاء</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-       // مجموعة الأسئلة
-const QUESTIONS = [
-    // أسئلة عامة (40 سؤال)
-    {cat: "عامة", q: "ما هو الكوكب الذي يعرف بالكوكب الأحمر؟", a: "المريخ", difficulty: "easy"},
-    {cat: "عامة", q: "ما هي عاصمة فرنسا؟", a: "باريس", difficulty: "easy"},
-    {cat: "عامة", q: "من هو مؤلف رواية 'البؤساء'؟", a: "فيكتور هوغو", difficulty: "easy"},
-    {cat: "عامة", q: "ما هو أطول نهر في العالم؟", a: "نهر النيل", difficulty: "easy"},
-    {cat: "عامة", q: "ما هو العنصر الكيميائي الذي رمزه 'O'؟", a: "الأكسجين", difficulty: "easy"},
-    {cat: "عامة", q: "من هو أول إنسان صعد إلى القمر؟", a: "نيل أرمسترونغ", difficulty: "easy"},
-    {cat: "عامة", q: "ما هي أكبر قارة في العالم؟", a: "آسيا", difficulty: "easy"},
-    {cat: "عامة", q: "من هو مخترع المصباح الكهربائي؟", a: "توماس إديسون", difficulty: "easy"},
-    {cat: "عامة", q: "ما هو أسرع حيوان بري؟", a: "الفهد", difficulty: "easy"},
-    {cat: "عامة", q: "ما هي اللغة الرسمية للبرازيل؟", a: "البرتغالية", difficulty: "medium"},
-    {cat: "عامة", q: "من هو عالم الفيزياء الذي وضع نظرية النسبية؟", a: "ألبرت أينشتاين", difficulty: "easy"},
-    {cat: "عامة", q: "ما هو أكبر محيط في العالم؟", a: "المحيط الهادئ", difficulty: "easy"},
-    {cat: "عامة", q: "من هو رسام لوحة 'الموناليزا'؟", a: "ليوناردو دافنشي", difficulty: "easy"},
-    {cat: "عامة", q: "ما هو أطول جبل في العالم؟", a: "جبل إفرست", difficulty: "easy"},
-    {cat: "عامة", q: "من هو مؤلف مسرحية 'هاملت'؟", a: "ويليام شكسبير", difficulty: "easy"},
-    {cat: "عامة", q: "ما هو الغاز الأكثر وفرة في الغلاف الجوي؟", a: "النيتروجين", difficulty: "medium"},
-    {cat: "عامة", q: "من هو أول رئيس للولايات المتحدة الأمريكية؟", a: "جورج واشنطن", difficulty: "easy"},
-    {cat: "عامة", q: "ما هي عاصمة اليابان؟", a: "طوكيو", difficulty: "easy"},
-    {cat: "عامة", q: "من هو مكتشف أمريكا؟", a: "كريستوفر كولومبوس", difficulty: "easy"},
-    {cat: "عامة", q: "ما هو أكبر بحر في العالم؟", a: "بحر الصين الجنوبي", difficulty: "hard"},
-    {cat: "عامة", q: "من هو مؤسس علم الجبر؟", a: "الخوارزمي", difficulty: "medium"},
-    {cat: "عامة", q: "ما هي أصغر قارة في العالم؟", a: "أستراليا", difficulty: "easy"},
-    {cat: "عامة", q: "من هو مخترع الهاتف؟", a: "ألكسندر جراهام بيل", difficulty: "easy"},
-    {cat: "عامة", q: "ما هو المعدن السائل في درجة حرارة الغرفة؟", a: "الزئبق", difficulty: "medium"},
-    {cat: "عامة", q: "من هو أول رائد فضاء في التاريخ؟", a: "يوري جاجارين", difficulty: "medium"},
-    {cat: "عامة", q: "ما هي العملة الرسمية لليابان؟", a: "الين", difficulty: "medium"},
-    {cat: "عامة", q: "من هو مؤلف كتاب 'الأمير'؟", a: "نيكولو مكيافيلي", difficulty: "medium"},
-    {cat: "عامة", q: "ما هو عدد قارات العالم؟", a: "7 قارات", difficulty: "easy"},
-    {cat: "عامة", q: "من هو شاعر الرسول صلى الله عليه وسلم؟", a: "حسان بن ثابت", difficulty: "easy"},
-    {cat: "عامة", q: "ما هو أقدم نادي كرة قدم في العالم؟", a: "شيفيلد إف سي", difficulty: "hard"},
-    {cat: "عامة", q: "من هو مكتشف البنسلين؟", a: "ألكسندر فلمنج", difficulty: "medium"},
-    {cat: "عامة", q: "ما هي عاصمة كندا؟", a: "أوتاوا", difficulty: "medium"},
-    {cat: "عامة", q: "من هو مؤلف رواية 'الجريمة والعقاب'؟", a: "فيودور دوستويفسكي", difficulty: "medium"},
-    {cat: "عامة", q: "ما هو عدد أيام السنة الكبيسة؟", a: "366 يوماً", difficulty: "easy"},
-    {cat: "عامة", q: "من هو أول خليفة في الإسلام؟", a: "أبو بكر الصديق", difficulty: "easy"},
-    {cat: "عامة", q: "ما هو أكبر خليج في العالم؟", a: "خليج المكسيك", difficulty: "hard"},
-    {cat: "عامة", q: "من هو مخترع التلفزيون؟", a: "جون لوجي بيرد", difficulty: "medium"},
-    {cat: "عامة", q: "ما هي عاصمة الأرجنتين؟", a: "بوينس آيرس", difficulty: "medium"},
-    {cat: "عامة", q: "من هو مؤلف كتاب 'كليلة ودمنة'؟", a: "ابن المقفع", difficulty: "medium"},
-    {cat: "عامة", q: "ما هو عدد كواكب المجموعة الشمسية؟", a: "8 كواكب", difficulty: "easy"},
-
-    // تاريخ (30 سؤال)
-    {cat: "تاريخ", q: "في أي عام وقعت الحرب العالمية الأولى؟", a: "1914", difficulty: "easy"},
-    {cat: "تاريخ", q: "من هو أول خليفة في الإسلام؟", a: "أبو بكر الصديق", difficulty: "easy"},
-    {cat: "تاريخ", q: "ما هي المعركة التي انتصر فيها صلاح الدين الأيوبي على الصليبيين؟", a: "معركة حطين", difficulty: "medium"},
-    {cat: "تاريخ", q: "من هو مؤسس الدولة العباسية؟", a: "أبو العباس السفاح", difficulty: "medium"},
-    {cat: "تاريخ", q: "في أي عام سقطت الإمبراطورية الرومانية الغربية؟", a: "476 ميلادي", difficulty: "hard"},
-    {cat: "تاريخ", q: "من هو القائد الذي أسس الإمبراطورية المغولية؟", a: "جنكيز خان", difficulty: "medium"},
-    {cat: "تاريخ", q: "ما هي الحضارة التي بنت الأهرامات في مصر؟", a: "الحضارة المصرية القديمة", difficulty: "easy"},
-    {cat: "تاريخ", q: "من هو الفرعون المصري الذي بنى أبو الهول؟", a: "خفرع", difficulty: "medium"},
-    {cat: "تاريخ", q: "في أي عام انتهت الحرب العالمية الثانية؟", a: "1945", difficulty: "easy"},
-    {cat: "تاريخ", q: "من هو الإمبراطور الفرنسي الذي هزم في معركة واترلو؟", a: "نابليون بونابرت", difficulty: "easy"},
-    {cat: "تاريخ", q: "ما هي المعركة التي فتحت فيها الأندلس؟", a: "معركة وادي لكة", difficulty: "hard"},
-    {cat: "تاريخ", q: "من هو مؤسس الدولة الأموية؟", a: "معاوية بن أبي سفيان", difficulty: "medium"},
-    {cat: "تاريخ", q: "من هو قائد معركة نهاوند؟", a: "النعمان بن مقرن", difficulty: "hard"},
-    {cat: "تاريخ", q: "ما هي الدولة التي حكمتها كليوباترا؟", a: "مصر البطلمية", difficulty: "medium"},
-    {cat: "تاريخ", q: "من هو الخليفة العباسي الذي أسس بيت الحكمة؟", a: "هارون الرشيد", difficulty: "medium"},
-    {cat: "تاريخ", q: "في أي عام وقعت الثورة الفرنسية؟", a: "1789", difficulty: "medium"},
-    {cat: "تاريخ", q: "من هو القائد المسلم الذي فتح بلاد السند؟", a: "محمد بن القاسم الثقفي", difficulty: "hard"},
-    {cat: "تاريخ", q: "من هو مؤسس الدولة الفاطمية؟", a: "عبيد الله المهدي", difficulty: "hard"},
-    {cat: "تاريخ", q: "في أي عام اكتشف كريستوفر كولومبوس أمريكا؟", a: "1492", difficulty: "easy"},
-    {cat: "تاريخ", q: "من هو الخليفة الأموي الذي بنى مسجد قبة الصخرة؟", a: "عبد الملك بن مروان", difficulty: "medium"},
-    {cat: "تاريخ", q: "ما هي الحضارة التي بنت مدينة بابل؟", a: "الحضارة البابلية", difficulty: "medium"},
-    {cat: "تاريخ", q: "من هو السلطان العثماني الذي فتح القسطنطينية؟", a: "محمد الفاتح", difficulty: "medium"},
-    {cat: "تاريخ", q: "في أي عام وقعت مجزرة صبرا وشاتيلا؟", a: "1982", difficulty: "hard"},
-    {cat: "تاريخ", q: "من هو قائد الثورة العربية الكبرى؟", a: "الشريف حسين بن علي", difficulty: "medium"},
-    {cat: "تاريخ", q: "من هو آخر خليفة عثماني؟", a: "عبد المجيد الثاني", difficulty: "medium"},
-    {cat: "تاريخ", q: "في أي عام تأسست المملكة العربية السعودية؟", a: "1932", difficulty: "medium"},
-    {cat: "تاريخ", q: "من هو مؤسس مدينة بغداد؟", a: "أبو جعفر المنصور", difficulty: "medium"},
-    {cat: "تاريخ", q: "ما هي أطول حرب في التاريخ؟", a: "حرب المائة عام", difficulty: "hard"},
-    {cat: "تاريخ", q: "من هو الفرعون الذي حكم مصر أثناء خروج بني إسرائيل؟", a: "رمسيس الثاني", difficulty: "medium"},
-    {cat: "تاريخ", q: "في أي عام سقطت غرناطة آخر معاقل المسلمين في الأندلس؟", a: "1492", difficulty: "medium"},
-
-    // علوم (25 سؤال)
-    {cat: "علوم", q: "ما هو أصغر عنصر في الكون؟", a: "الذرة", difficulty: "easy"},
-    {cat: "علوم", q: "ما هي سرعة الضوء في الفراغ؟", a: "299,792,458 متر في الثانية", difficulty: "medium"},
-    {cat: "علوم", q: "من هو مكتشف الجاذبية؟", a: "إسحاق نيوتن", difficulty: "easy"},
-    {cat: "علوم", q: "ما هو المرض الذي يسببه فيروس نقص المناعة البشرية؟", a: "الإيدز", difficulty: "easy"},
-    {cat: "علوم", q: "ما هو العنصر الأكثر شيوعاً في الكون؟", a: "الهيدروجين", difficulty: "medium"},
-    {cat: "علوم", q: "ما هو الكوكب الأكبر في المجموعة الشمسية؟", a: "المشتري", difficulty: "easy"},
-    {cat: "علوم", q: "من هو عالم الفيزياء الذي وضع نظرية النسبية؟", a: "ألبرت أينشتاين", difficulty: "easy"},
-    {cat: "علوم", q: "ما هو الغاز الذي تنتجه النباتات خلال عملية البناء الضوئي؟", a: "الأكسجين", difficulty: "easy"},
-    {cat: "علوم", q: "ما هو أصل كلمة 'روبوت'؟", a: "من اللغة التشيكية وتعني 'العمل القسري'", difficulty: "hard"},
-    {cat: "علوم", q: "ما هو العنصر الكيميائي الذي يحمل الرمز 'Fe'؟", a: "الحديد", difficulty: "easy"},
-    {cat: "علوم", q: "ما هو عدد الكروموسومات في الإنسان؟", a: "46 كروموسوم", difficulty: "medium"},
-    {cat: "علوم", q: "ما هو أقوى عظم في جسم الإنسان؟", a: "عظم الفخذ", difficulty: "medium"},
-    {cat: "علوم", q: "ما هو الغاز المسؤول عن الاحتباس الحراري؟", a: "ثاني أكسيد الكربون", difficulty: "medium"},
-    {cat: "علوم", q: "ما هو اسم أقرب نجم إلى الأرض بعد الشمس؟", a: "بروكسيما قنطورس", difficulty: "hard"},
-    {cat: "علوم", q: "ما هو المعدن الوحيد السائل في درجة حرارة الغرفة؟", a: "الزئبق", difficulty: "medium"},
-    {cat: "علوم", q: "ما هو الجهاز المسؤول عن تنظيم السكر في الدم؟", a: "البنكرياس", difficulty: "medium"},
-    {cat: "علوم", q: "ما هو اسم أصغر عظمة في جسم الإنسان؟", a: "عظمة الركاب في الأذن", difficulty: "hard"},
-    {cat: "علوم", q: "ما هو الغاز المستخدم في إطارات السيارات للسباق؟", a: "النيتروجين", difficulty: "hard"},
-    {cat: "علوم", q: "ما هو العنصر الكيميائي الذي رمزه 'O'؟", a: "الأكسجين", difficulty: "easy"},
-    {cat: "علوم", q: "ما هو الكوكب المعروف بالكوكب الأحمر؟", a: "المريخ", difficulty: "easy"},
-    {cat: "علوم", q: "ما هو أقرب كوكب إلى الشمس؟", a: "عطارد", difficulty: "easy"},
-    {cat: "علوم", q: "من هو مكتشف الدورة الدموية؟", a: "ويليام هارفي", difficulty: "medium"},
-    {cat: "علوم", q: "ما هو الجهاز الذي يقيس الزلازل؟", a: "السيسموجراف", difficulty: "medium"},
-    {cat: "علوم", q: "ما هو الغاز الذي يسبب ثقب الأوزون؟", a: "الكلوروفلوروكربون", difficulty: "hard"},
-    {cat: "علوم", q: "ما هو أسرع الحيوانات البحرية؟", a: "سمك الشراع", difficulty: "hard"},
-
-    // جغرافيا (25 سؤال)
-    {cat: "جغرافيا", q: "ما هي أكبر دولة في العالم من حيث المساحة؟", a: "روسيا", difficulty: "easy"},
-    {cat: "جغرافيا", q: "ما هو أعلى جبل في العالم؟", a: "جبل إفرست", difficulty: "easy"},
-    {cat: "جغرافيا", q: "ما هي أكبر صحراء في العالم؟", a: "الصحراء الكبرى", difficulty: "easy"},
-    {cat: "جغرافيا", q: "ما هو أطول نهر في العالم؟", a: "نهر النيل", difficulty: "easy"},
-    {cat: "جغرافيا", q: "ما هي أكبر قارة في العالم؟", a: "آسيا", difficulty: "easy"},
-    {cat: "جغرافيا", q: "ما هو أكبر محيط في العالم؟", a: "المحيط الهادئ", difficulty: "easy"},
-    {cat: "جغرافيا", q: "ما هي عاصمة فرنسا؟", a: "باريس", difficulty: "easy"},
-    {cat: "جغرافيا", q: "ما هي أصغر قارة في العالم؟", a: "أستراليا", difficulty: "easy"},
-    {cat: "جغرافيا", q: "ما هو أطول نهر في آسيا؟", a: "نهر اليانغتسي", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هي الدولة التي تتكون من أكثر من 17,000 جزيرة؟", a: "إندونيسيا", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هي العاصمة التي تقع على نهر التايمز؟", a: "لندن", difficulty: "easy"},
-    {cat: "جغرافيا", q: "ما هو المضيق الذي يربط بين البحر الأحمر وخليج عدن؟", a: "مضيق باب المندب", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هي أكبر جزيرة في البحر المتوسط؟", a: "صقلية", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هي الدولة الوحيدة التي لا توجد لديها أنهار؟", a: "المملكة العربية السعودية", difficulty: "hard"},
-    {cat: "جغرافيا", q: "ما هي أعلى شلالات في العالم؟", a: "شلالات آنجل في فنزويلا", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هي أكبر بحيرة في العالم؟", a: "بحر قزوين", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هو المضيق الذي يفصل بين أوروبا وأفريقيا؟", a: "مضيق جبل طارق", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هي الدولة التي تقع فيها جبال الأنديز؟", a: "تشيلي والأرجنتين وبيرو", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هي عاصمة أستراليا؟", a: "كانبرا", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هو أكبر خليج في العالم؟", a: "خليج المكسيك", difficulty: "hard"},
-    {cat: "جغرافيا", q: "ما هي الدولة التي تعرف باسم 'أرض الشمس المشرقة'؟", a: "اليابان", difficulty: "easy"},
-    {cat: "جغرافيا", q: "ما هو النهر الذي يمر عبر 10 دول أوروبية؟", a: "نهر الدانوب", difficulty: "hard"},
-    {cat: "جغرافيا", q: "ما هي أصغر دولة في العالم من حيث المساحة؟", a: "الفاتيكان", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هي الجزر المعروفة باسم 'الجزر البريطانية'؟", a: "بريطانيا العظمى وأيرلندا", difficulty: "medium"},
-    {cat: "جغرافيا", q: "ما هي الدولة التي لديها أطول ساحل في العالم؟", a: "كندا", difficulty: "hard"},
-
-    // رياضة (25 سؤال)
-    {cat: "رياضة", q: "من هو اللاعب الذي سجل أكبر عدد من الأهداف في تاريخ كأس العالم؟", a: "ميروسلاف كلوزه (16 هدف)", difficulty: "easy"},
-    {cat: "رياضة", q: "أي نادي فاز بدوري أبطال أوروبا أكبر عدد من المرات؟", a: "ريال مدريد (14 مرة)", difficulty: "easy"},
-    {cat: "رياضة", q: "من هو اللاعب الوحيد الذي فاز بجائزة الكرة الذهبية 7 مرات؟", a: "ليونيل ميسي", difficulty: "easy"},
-    {cat: "رياضة", q: "أي دولة فازت بكأس العالم 5 مرات؟", a: "البرازيل", difficulty: "easy"},
-    {cat: "رياضة", q: "من هو أفضل هداف في تاريخ الدوري الإنجليزي الممتاز؟", a: "آلان شيرر (260 هدف)", difficulty: "medium"},
-    {cat: "رياضة", q: "ما هو اسم ملعب نادي برشلونة؟", a: "كامب نو", difficulty: "easy"},
-    {cat: "رياضة", q: "من هو المدرب الذي قاد منتخب إيطاليا للفوز بكأس العالم 2006؟", a: "مارتشيلو ليبي", difficulty: "medium"},
-    {cat: "رياضة", q: "أي لاعب حصل على جائزة أفضل لاعب في العالم من الفيفا 6 مرات؟", a: "كريستيانو رونالدو", difficulty: "medium"},
-    {cat: "رياضة", q: "ما هو لقب نادي بايرن ميونخ؟", a: "البافاريين", difficulty: "easy"},
-    {cat: "رياضة", q: "ما هو اسم الدوري الإسباني؟", a: "لاليغا", difficulty: "easy"},
-    {cat: "رياضة", q: "من هو الهداف التاريخي لمنتخب مصر؟", a: "محمد صلاح", difficulty: "easy"},
-    {cat: "رياضة", q: "أي نادي يعرف باسم 'البارسا'؟", a: "برشلونة", difficulty: "easy"},
-    {cat: "رياضة", q: "ما هو لقب منتخب البرازيل؟", a: "السيلساو", difficulty: "easy"},
-    {cat: "رياضة", q: "من هو أفضل هداف في تاريخ دوري أبطال أوروبا؟", a: "كريستيانو رونالدو", difficulty: "medium"},
-    {cat: "رياضة", q: "أي دولة استضافت كأس العالم 2018؟", a: "روسيا", difficulty: "easy"},
-    {cat: "رياضة", q: "ما هو اسم كأس العالم للأندية؟", a: "كأس العالم للأندية", difficulty: "easy"},
-    {cat: "رياضة", q: "من هو اللاعب الأكثر مشاركة في تاريخ كرة القدم؟", a: "أحمد حسن (184 مباراة)", difficulty: "medium"},
-    {cat: "رياضة", q: "أي نادي فاز بالدوري الإنجليزي 20 مرة؟", a: "مانشستر يونايتد", difficulty: "easy"},
-    {cat: "رياضة", q: "ما هو لقب نادي يوفنتوس؟", a: "السيدة العجوز", difficulty: "easy"},
-    {cat: "رياضة", q: "من هو اللاعب الذي سجل هدف القرن في كأس العالم 1986؟", a: "دييجو مارادونا", difficulty: "medium"},
-    {cat: "رياضة", q: "أي دولة فازت بكأس الأمم الأفريقية 7 مرات؟", a: "مصر", difficulty: "easy"},
-    {cat: "رياضة", q: "ما هو اسم ملعب ريال مدريد؟", a: "سانتياغو برنابيو", difficulty: "easy"},
-    {cat: "رياضة", q: "من هو الهداف التاريخي لمنتخب الأرجنتين؟", a: "ليونيل ميسي", difficulty: "easy"},
-    {cat: "رياضة", q: "ما هو لقب منتخب ألمانيا؟", a: "المانشافت", difficulty: "easy"},
-    {cat: "رياضة", q: "أي دولة استضافت كأس العالم 2022؟", a: "قطر", difficulty: "easy"},
-
-    // فن (20 سؤال)
-    {cat: "فن", q: "من هو الفنان الذي رسم لوحة 'ليلة مرصعة بالنجوم'؟", a: "فينسنت فان جوخ", difficulty: "easy"},
-    {cat: "فن", q: "ما هي الجنسية الفنية لليوناردو دافنشي؟", a: "إيطالي", difficulty: "easy"},
-    {cat: "فن", q: "من هو مؤلف لوحة 'الصرخة'؟", a: "إدفارد مونك", difficulty: "medium"},
-    {cat: "فن", q: "ما هي الحركة الفنية التي ارتبطت بابلو بيكاسو؟", a: "التكعيبية", difficulty: "medium"},
-    {cat: "فن", q: "من هو الملحن الذي أصم في أواخر حياته لكنه استمر في التأليف الموسيقي؟", a: "لودفيج فان بيتهوفن", difficulty: "easy"},
-    {cat: "فن", q: "ما هو الفن الذي اشتهر به مايكل أنجلو؟", a: "النحت والرسم", difficulty: "easy"},
-    {cat: "فن", q: "من هو الفنان الذي رسم 'الموناليزا'؟", a: "ليوناردو دافنشي", difficulty: "easy"},
-    {cat: "فن", q: "ما هي المدرسة الفنية التي تأسست في فرنسا في القرن التاسع عشر؟", a: "الانطباعية", difficulty: "medium"},
-    {cat: "فن", q: "من هو الموسيقي الذي ألف 'فصول الأربع'؟", a: "أنطونيو فيفالدي", difficulty: "medium"},
-    {cat: "فن", q: "ما هي الجائزة السينمائية المرموقة في الولايات المتحدة؟", a: "جائزة الأوسكار", difficulty: "easy"},
-    {cat: "فن", q: "ما هو اسم أشهر مسرح في لندن؟", a: "مسرح شكسبير جلوب", difficulty: "medium"},
-    {cat: "فن", q: "من هو الفنان الإسباني المعروف بلوحاته السريالية؟", a: "سلفادور دالي", difficulty: "medium"},
-    {cat: "فن", q: "ما هي الرواية التي تحولت إلى فيلم 'العراب'؟", a: "العراب لماريو بوزو", difficulty: "medium"},
-    {cat: "فن", q: "من هو المخرج الذي أخرج فيلم 'تايتانيك'؟", a: "جيمس كاميرون", difficulty: "easy"},
-    {cat: "فن", q: "ما هو الفن التقليدي الياباني لطي الورق؟", a: "الأوريغامي", difficulty: "medium"},
-    {cat: "فن", q: "من هو المؤلف الموسيقي لباليه 'بحيرة البجع'؟", a: "بيوتر إليتش تشايكوفسكي", difficulty: "medium"},
-    {cat: "فن", q: "ما هي أشهر أوبرا في العالم؟", a: "أوبرا سيدني", difficulty: "easy"},
-    {cat: "فن", q: "من هو الفنان الذي اشتهر برسم النساء في الحمامات؟", a: "إدغار ديغا", difficulty: "hard"},
-    {cat: "فن", q: "ما هو الفن الذي يجمع بين الرسم والكتابة العربية؟", a: "فن الخط العربي", difficulty: "easy"},
-    {cat: "فن", q: "من هو مؤلف سمفونية القدر؟", a: "لودفيج فان بيتهوفن", difficulty: "medium"},
-
-    // تكنولوجيا (20 سؤال)
-    {cat: "تكنولوجيا", q: "ما هي الشركة التي طورت نظام التشغيل ويندوز؟", a: "مايكروسوفت", difficulty: "easy"},
-    {cat: "تكنولوجيا", q: "ما هو الجهاز الذي يعتبر 'دماغ' الكمبيوتر؟", a: "المعالج (CPU)", difficulty: "easy"},
-    {cat: "تكنولوجيا", q: "ما هي لغة البرمجة المستخدمة في تطوير تطبيقات Android؟", a: "جافا أو كوتلن", difficulty: "medium"},
-    {cat: "تكنولوجيا", q: "ما هو اسم مؤسس شركة Apple؟", a: "ستيف جوبز", difficulty: "easy"},
-    {cat: "تكنولوجيا", q: "ما هي تقنية الاتصال اللاسلكي للمسافات القصيرة؟", a: "البلوتوث", difficulty: "easy"},
-    {cat: "تكنولوجيا", q: "ما هو نظام التشغيل مفتوح المصدر المشهور؟", a: "لينكس", difficulty: "medium"},
-    {cat: "تكنولوجيا", q: "ما هي الشركة التي تمتلك محرك البحث جوجل؟", a: "ألفابت", difficulty: "medium"},
-    {cat: "تكنولوجيا", q: "ما هو الجهاز الذي يحول التيار المتردد إلى مستمر؟", a: "المحول (Adapter)", difficulty: "hard"},
-    {cat: "تكنولوجيا", q: "ما هي لغة البرمجة المستخدمة في تطوير صفحات الويب التفاعلية؟", a: "جافا سكريبت", difficulty: "medium"},
-    {cat: "تكنولوجيا", q: "ما هو اسم أول كمبيوتر شخصي؟", a: "ألتير 8800", difficulty: "hard"},
-    {cat: "تكنولوجيا", q: "ما هي تقنية التخزين السحابي التابعة لمايكروسوفت؟", a: "ون درايف", difficulty: "easy"},
-    {cat: "تكنولوجيا", q: "ما هي الشركة التي طورت معالج البنتيوم؟", a: "إنتل", difficulty: "medium"},
-    {cat: "تكنولوجيا", q: "ما هو نظام الأرقام المستخدم في الحواسيب؟", a: "النظام الثنائي (0 و1)", difficulty: "easy"},
-    {cat: "تكنولوجيا", q: "ما هي لغة الترميز المستخدمة في إنشاء صفحات الويب؟", a: "HTML", difficulty: "easy"},
-    {cat: "تكنولوجيا", q: "ما هو اسم المساعد الصوتي لشركة Apple؟", a: "سيري", difficulty: "easy"},
-    {cat: "تكنولوجيا", q: "ما هي تقنية الشاشات القابلة للطي؟", a: "شاشات OLED القابلة للطي", difficulty: "hard"},
-    {cat: "تكنولوجيا", q: "ما هو نظام التشغيل المستخدم في هواتف آيفون؟", a: "iOS", difficulty: "easy"},
-    {cat: "تكنولوجيا", q: "ما هي العملة الرقمية المشفرة الأشهر؟", a: "البيتكوين", difficulty: "medium"},
-    {cat: "تكنولوجيا", q: "ما هو البرنامج المستخدم لحماية الكمبيوتر من الفيروسات؟", a: "مضاد الفيروسات", difficulty: "easy"},
-    {cat: "تكنولوجيا", q: "ما هو نظام التشغيل المجاني المشهور للهواتف؟", a: "أندرويد", difficulty: "easy"},
-
-    // ثقافة (20 سؤال)
-    {cat: "ثقافة", q: "ما هو أطول نهر في العالم؟", a: "نهر النيل", difficulty: "easy"},
-    {cat: "ثقافة", q: "ما هي عاصمة أستراليا؟", a: "كانبرا", difficulty: "medium"},
-    {cat: "ثقافة", q: "من هو مؤلف رواية 'البؤساء'؟", a: "فيكتور هوغو", difficulty: "easy"},
-    {cat: "ثقافة", q: "ما هو العنصر الكيميائي الذي رمزه 'Au'؟", a: "الذهب", difficulty: "easy"},
-    {cat: "ثقافة", q: "ما هو أسرع حيوان بري في العالم؟", a: "الفهد الصياد", difficulty: "easy"},
-    {cat: "ثقافة", q: "من هو الفيلسوف الذي قال: 'أنا أفكر إذن أنا موجود'؟", a: "رينيه ديكارت", difficulty: "medium"},
-    {cat: "ثقافة", q: "ما هي أصغر قارة في العالم؟", a: "أستراليا", difficulty: "easy"},
-    {cat: "ثقافة", q: "من هو مخترع الهاتف؟", a: "ألكسندر جراهام بيل", difficulty: "easy"},
-    {cat: "ثقافة", q: "ما هو الغاز الأكثر وفرة في الغلاف الجوي للأرض؟", a: "النيتروجين", difficulty: "medium"},
-    {cat: "ثقافة", q: "من هو مؤلف مسرحية 'هاملت'؟", a: "ويليام شكسبير", difficulty: "easy"},
-    {cat: "ثقافة", q: "ما هو أعلى جبل في العالم؟", a: "جبل إفرست", difficulty: "easy"},
-    {cat: "ثقافة", q: "ما هي اللغة الرسمية للبرازيل؟", a: "البرتغالية", difficulty: "medium"},
-    {cat: "ثقافة", q: "من هو أول إنسان صعد إلى الفضاء؟", a: "يوري جاجارين", difficulty: "medium"},
-    {cat: "ثقافة", q: "ما هو أكبر محيط في العالم؟", a: "المحيط الهادئ", difficulty: "easy"},
-    {cat: "ثقافة", q: "من هو مؤسس علم الجبر؟", a: "الخوارزمي", difficulty: "medium"},
-    {cat: "ثقافة", q: "ما هو الكوكب الأقرب إلى الشمس؟", a: "عطارد", difficulty: "easy"},
-    {cat: "ثقافة", q: "ما هي عاصمة كندا؟", a: "أوتاوا", difficulty: "medium"},
-    {cat: "ثقافة", q: "من هو رسام لوحة 'الموناليزا'؟", a: "ليوناردو دافنشي", difficulty: "easy"},
-    {cat: "ثقافة", q: "ما هو أطول حيوان في العالم؟", a: "الحوت الأزرق", difficulty: "easy"},
-    {cat: "ثقافة", q: "من هو مكتشف أمريكا؟", a: "كريستوفر كولومبوس", difficulty: "easy"}
-];
-
-        // العناصر الرئيسية
-        const setupScreen = document.getElementById('setupScreen');
-        const gameScreen = document.getElementById('gameScreen');
-        const startGameBtn = document.getElementById('startGameBtn');
-        const backToSetupBtn = document.getElementById('backToSetupBtn');
-        const addQuestionsBtn = document.getElementById('addQuestionsBtn');
-        const addQuestionsModal = document.getElementById('addQuestionsModal');
-        const saveQuestionBtn = document.getElementById('saveQuestionBtn');
-        const cancelAddQuestionBtn = document.getElementById('cancelAddQuestionBtn');
-        const soundToggle = document.getElementById('soundToggle');
-        const soundStatus = document.getElementById('soundStatus');
-        
-        // عناصر اللعبة
-        const revealBtn = document.getElementById('revealBtn');
-        const afterReveal = document.getElementById('afterReveal');
-        const teamABtn = document.getElementById('teamABtn');
-        const teamBBtn = document.getElementById('teamBBtn');
-        const noneBtn = document.getElementById('noneBtn');
-        const questionBox = document.getElementById('questionBox');
-        const answerBox = document.getElementById('answerBox');
-        const scoreAEl = document.getElementById('scoreA');
-        const scoreBEl = document.getElementById('scoreB');
-        const showTeamA = document.getElementById('showTeamA');
-        const showTeamB = document.getElementById('showTeamB');
-        const qIndexEl = document.getElementById('qIndex');
-        const qTotalEl = document.getElementById('qTotal');
-        const catShow = document.getElementById('catShow');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const timerContainer = document.getElementById('timerContainer');
-        const timerProgress = document.getElementById('timerProgress');
-        const timerLabel = document.getElementById('timerLabel');
-        const endGameModal = document.getElementById('endGameModal');
-        const winnerNameEl = document.getElementById('winnerName');
-        const finalScoreEl = document.getElementById('finalScore');
-        const playAgainBtn = document.getElementById('playAgainBtn');
-        
-        // متغيرات اللعبة
-        let selectedQuestions = [];
-        let current = 0;
-        let scoreA = 0, scoreB = 0;
-        let teamA = 'الفريق الأحمر', teamB = 'الفريق الأزرق';
-        let timerInterval;
-        let timerDuration = 30;
-        let totalQuestions = 20;
-        let soundEnabled = true;
-        
-        // تعريف الأصوات باستخدام Howler.js
-        let sounds = {
-            reveal: null,
-            correct: null,
-            wrong: null,
-            timer: null,
-            start: null
-        };
-
-        // تهيئة الأصوات
-        function initSounds() {
-            try {
-                // إنشاء أصوات باستخدام Howler.js
-                sounds.reveal = new Howl({
-                    src: ['https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3'],
-                    volume: 0.7,
-                    onloaderror: function() {
-                        createFallbackSounds();
-                    }
-                });
-
-                sounds.correct = new Howl({
-                    src: ['https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3'],
-                    volume: 0.7,
-                    onloaderror: function() {
-                        createFallbackSounds();
-                    }
-                });
-
-                sounds.wrong = new Howl({
-                    src: ['https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3'],
-                    volume: 0.7,
-                    onloaderror: function() {
-                        createFallbackSounds();
-                    }
-                });
-
-                sounds.timer = new Howl({
-                    src: ['https://assets.mixkit.co/sfx/preview/mixkit-alarm-digital-clock-beep-989.mp3'],
-                    volume: 0.5,
-                    onloaderror: function() {
-                        createFallbackSounds();
-                    }
-                });
-
-                sounds.start = new Howl({
-                    src: ['https://assets.mixkit.co/sfx/preview/mixkit-game-show-intro-331.mp3'],
-                    volume: 0.7,
-                    onloaderror: function() {
-                        createFallbackSounds();
-                    }
-                });
-
-                soundStatus.textContent = '✓ الأصوات جاهزة';
-                soundStatus.style.color = 'var(--success)';
-            } catch (error) {
-                createFallbackSounds();
-            }
-        }
-
-        // إنشاء أصوات بديلة إذا فشل تحميل الملفات
-        function createFallbackSounds() {
-            try {
-                // أصوات بديلة باستخدام Howler.js مع نغمات مدمجة
-                sounds.reveal = new Howl({
-                    src: [],
-                    volume: 0.7,
-                    onplay: function() {
-                        // نغمة بديلة
-                        playFallbackSound(800, 0.3);
-                    }
-                });
-
-                sounds.correct = new Howl({
-                    src: [],
-                    volume: 0.7,
-                    onplay: function() {
-                        // نغمة نجاح بديلة
-                        playFallbackSound(523, 0.1);
-                        setTimeout(() => playFallbackSound(659, 0.1), 100);
-                        setTimeout(() => playFallbackSound(784, 0.2), 200);
-                    }
-                });
-
-                sounds.wrong = new Howl({
-                    src: [],
-                    volume: 0.7,
-                    onplay: function() {
-                        // نغمة خطأ بديلة
-                        playFallbackSound(200, 0.5);
-                    }
-                });
-
-                sounds.timer = new Howl({
-                    src: [],
-                    volume: 0.5,
-                    onplay: function() {
-                        // نغمة مؤقت بديلة
-                        playFallbackSound(300, 0.1);
-                    }
-                });
-
-                sounds.start = new Howl({
-                    src: [],
-                    volume: 0.7,
-                    onplay: function() {
-                        // نغمة بداية بديلة
-                        playFallbackSound(392, 0.1);
-                        setTimeout(() => playFallbackSound(523, 0.1), 100);
-                        setTimeout(() => playFallbackSound(659, 0.2), 200);
-                    }
-                });
-
-                soundStatus.textContent = '✓ استخدام الأصوات البديلة';
-                soundStatus.style.color = 'var(--warning)';
-            } catch (error) {
-                soundStatus.textContent = '✗ الأصوات غير متاحة';
-                soundStatus.style.color = 'var(--error)';
-                soundEnabled = false;
-                soundToggle.textContent = '🔇';
-            }
-        }
-
-        // تشغيل الصوت البديل
-        function playFallbackSound(frequency, duration) {
-            try {
-                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioContext.createOscillator();
-                const gainNode = audioContext.createGain();
-                
-                oscillator.connect(gainNode);
-                gainNode.connect(audioContext.destination);
-                
-                oscillator.frequency.value = frequency;
-                oscillator.type = 'sine';
-                
-                gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                gainNode.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.01);
-                gainNode.gain.exponentialRampToValueAtTime(0.001, audioContext.currentTime + duration);
-                
-                oscillator.start(audioContext.currentTime);
-                oscillator.stop(audioContext.currentTime + duration);
-            } catch (e) {
-                console.log("Web Audio API غير مدعوم");
-            }
-        }
-
-        // تشغيل الصوت
-        function playSound(type) {
-            if (!soundEnabled || !sounds[type]) return;
-            
-            try {
-                sounds[type].play();
-            } catch (error) {
-                console.log("خطأ في تشغيل الصوت:", error);
-            }
-        }
-
-        // تهيئة اللعبة
-        function initGame() {
-            // تهيئة الأصوات أولاً
-            initSounds();
-            
-            // إضافة أحداث النقر على بطاقات الفئات
-            document.querySelectorAll('.category-card').forEach(card => {
-                card.addEventListener('click', function() {
-                    this.classList.toggle('selected');
-                });
-            });
-            
-            // أحداث الأزرار الرئيسية
-            startGameBtn.addEventListener('click', startGame);
-            backToSetupBtn.addEventListener('click', backToSetup);
-            addQuestionsBtn.addEventListener('click', showAddQuestionsModal);
-            saveQuestionBtn.addEventListener('click', saveNewQuestion);
-            cancelAddQuestionBtn.addEventListener('click', hideAddQuestionsModal);
-            playAgainBtn.addEventListener('click', playAgain);
-            soundToggle.addEventListener('click', toggleSound);
-            
-            // أحداث اللعبة
-            revealBtn.addEventListener('click', revealAnswer);
-            teamABtn.addEventListener('click', () => applyPoint('A'));
-            teamBBtn.addEventListener('click', () => applyPoint('B'));
-            noneBtn.addEventListener('click', () => applyPoint('none'));
-            prevBtn.addEventListener('click', prevQuestion);
-            nextBtn.addEventListener('click', nextQuestion);
-        }
-        
-        // تبديل الصوت
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            soundToggle.textContent = soundEnabled ? '🔊' : '🔇';
-        }
-        
-        // بدء اللعبة
-        function startGame() {
-            // تشغيل صوت البدء
-            playSound('start');
-            
-            // جمع الإعدادات
-            teamA = document.getElementById('teamA').value.trim() || 'الفريق الأحمر';
-            teamB = document.getElementById('teamB').value.trim() || 'الفريق الأزرق';
-            totalQuestions = parseInt(document.getElementById('questionCount').value);
-            timerDuration = parseInt(document.getElementById('timerDuration').value);
-            
-            // جمع الفئات المختارة
-            const selectedCategories = Array.from(document.querySelectorAll('.category-card.selected'))
-                .map(card => card.getAttribute('data-category'));
-            
-            if (selectedCategories.length === 0) {
-                alert('يرجى اختيار فئة واحدة على الأقل');
-                return;
-            }
-            
-            // تصفية الأسئلة حسب الفئات المختارة
-            selectedQuestions = QUESTIONS.filter(q => selectedCategories.includes(q.cat));
-            
-            if (selectedQuestions.length === 0) {
-                alert('لا توجد أسئلة في الفئات المختارة');
-                return;
-            }
-            
-            // خلط الأسئلة واختيار العدد المطلوب
-            selectedQuestions = shuffleArray(selectedQuestions).slice(0, totalQuestions);
-            
-            // إعادة تعيين اللعبة
-            current = 0;
-            scoreA = 0;
-            scoreB = 0;
-            updateScoreUI();
-            
-            // تحديث واجهة اللعبة
-            showTeamA.textContent = teamA;
-            showTeamB.textContent = teamB;
-            qTotalEl.textContent = selectedQuestions.length;
-            
-            // الانتقال إلى شاشة اللعبة
-            setupScreen.classList.remove('active');
-            gameScreen.classList.add('active');
-            
-            // عرض السؤال الأول
-            showQuestion();
-        }
-        
-        // العودة إلى شاشة الإعدادات
-        function backToSetup() {
-            gameScreen.classList.remove('active');
-            setupScreen.classList.add('active');
-            clearInterval(timerInterval);
-        }
-        
-        // عرض سؤال
-        function showQuestion() {
-            if (!selectedQuestions || current >= selectedQuestions.length) {
-                finishGame();
-                return;
-            }
-            
-            const q = selectedQuestions[current];
-            
-            // إضافة مؤشر الصعوبة
-            let difficultyBadge = '';
-            if (q.difficulty === 'easy') {
-                difficultyBadge = '<span class="difficulty-badge difficulty-easy">سهل</span>';
-            } else if (q.difficulty === 'medium') {
-                difficultyBadge = '<span class="difficulty-badge difficulty-medium">متوسط</span>';
-            } else if (q.difficulty === 'hard') {
-                difficultyBadge = '<span class="difficulty-badge difficulty-hard">صعب</span>';
-            }
-            
-            questionBox.innerHTML = difficultyBadge + q.q;
-            answerBox.textContent = '';
-            answerBox.style.opacity = 0;
-            answerBox.classList.remove('reveal-anim');
-            revealBtn.disabled = false;
-            revealBtn.style.display = 'block';
-            afterReveal.style.display = 'none';
-            qIndexEl.textContent = (current + 1);
-            catShow.textContent = q.cat;
-            
-            // بدء المؤقت
-            startTimer();
-        }
-        
-        // بدء المؤقت
-        function startTimer() {
-            clearInterval(timerInterval);
-            let timeLeft = timerDuration;
-            timerProgress.style.width = '100%';
-            timerProgress.style.background = 'linear-gradient(90deg, var(--success), var(--gold))';
-            timerLabel.textContent = timeLeft + ' ثانية';
-            timerContainer.style.display = 'flex';
-            
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                const percentage = (timeLeft / timerDuration) * 100;
-                timerProgress.style.width = percentage + '%';
-                timerLabel.textContent = timeLeft + ' ثانية';
-                
-                // تغيير اللون مع اقتراب الوقت للنهاية
-                if (timeLeft <= 10) {
-                    timerProgress.style.background = 'linear-gradient(90deg, var(--warning), var(--error))';
-                    if (timeLeft <= 5) {
-                        timerProgress.classList.add('pulse');
-                        if (timeLeft <= 3) {
-                            playSound('timer');
-                        }
-                    }
-                }
-                
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    revealAnswer();
-                }
-            }, 1000);
-        }
-        
-        // كشف الإجابة
-        function revealAnswer() {
-            if (!selectedQuestions || current >= selectedQuestions.length) return;
-            
-            const q = selectedQuestions[current];
-            answerBox.textContent = 'الإجابة: ' + q.a;
-            answerBox.style.opacity = 1;
-            answerBox.classList.add('reveal-anim');
-            playSound('reveal');
-            
-            // إظهار أزرار الفرق
-            afterReveal.style.display = 'flex';
-            revealBtn.style.display = 'none';
-            
-            // إيقاف المؤقت
-            clearInterval(timerInterval);
-            timerProgress.style.width = '0%';
-            timerLabel.textContent = 'انتهى الوقت';
-        }
-        
-        // تطبيق النقاط
-        function applyPoint(who) {
-            if (who === 'A') {
-                scoreA++;
-                playSound('correct');
-                updateScoreUI();
-            } else if (who === 'B') {
-                scoreB++;
-                playSound('correct');
-                updateScoreUI();
-            } else {
-                playSound('wrong');
-            }
-            
-            // الانتقال للسؤال التالي بعد تأخير قصير
-            setTimeout(() => {
-                current++;
-                if (current < selectedQuestions.length) {
-                    showQuestion();
-                } else {
-                    finishGame();
-                }
-            }, 750);
-        }
-        
-        // تحديث النقاط
-        function updateScoreUI() {
-            scoreAEl.textContent = scoreA;
-            scoreBEl.textContent = scoreB;
-        }
-        
-        // السؤال السابق
-        function prevQuestion() {
-            if (current > 0) {
-                current--;
-                showQuestion();
-            }
-        }
-        
-        // السؤال التالي
-        function nextQuestion() {
-            if (selectedQuestions && current < selectedQuestions.length - 1) {
-                current++;
-                showQuestion();
-            }
-        }
-        
-        // إنهاء اللعبة
-        function finishGame() {
-            clearInterval(timerInterval);
-            timerContainer.style.display = 'none';
-            
-            // تحديد الفائز
-            let winnerText, trophy;
-            if (scoreA > scoreB) {
-                winnerText = teamA;
-                trophy = "🏆";
-            } else if (scoreB > scoreA) {
-                winnerText = teamB;
-                trophy = "🏆";
-            } else {
-                winnerText = "تعادل";
-                trophy = "🤝";
-            }
-            
-            // عرض نافذة النهاية
-            winnerNameEl.textContent = winnerText;
-            finalScoreEl.textContent = `${teamA}: ${scoreA} - ${teamB}: ${scoreB}`;
-            document.getElementById('winnerTrophy').textContent = trophy;
-            endGameModal.style.display = 'flex';
-        }
-        
-        // اللعب مرة أخرى
-        function playAgain() {
-            endGameModal.style.display = 'none';
-            backToSetup();
-        }
-        
-        // عرض نافذة إضافة الأسئلة
-        function showAddQuestionsModal() {
-            addQuestionsModal.style.display = 'flex';
-        }
-        
-        // إخفاء نافذة إضافة الأسئلة
-        function hideAddQuestionsModal() {
-            addQuestionsModal.style.display = 'none';
-            // مسح الحقول
-            document.getElementById('newQuestion').value = '';
-            document.getElementById('newAnswer').value = '';
-        }
-        
-        // حفظ سؤال جديد
-        function saveNewQuestion() {
-            const question = document.getElementById('newQuestion').value.trim();
-            const answer = document.getElementById('newAnswer').value.trim();
-            const category = document.getElementById('newCategory').value;
-            const difficulty = document.getElementById('newDifficulty').value;
-            
-            if (!question || !answer) {
-                alert('يرجى إدخال السؤال والإجابة');
-                return;
-            }
-            
-            // إضافة السؤال الجديد
-            QUESTIONS.push({
-                cat: category,
-                q: question,
-                a: answer,
-                difficulty: difficulty
-            });
-            
-            // إخفاء النافذة ومسح الحقول
-            hideAddQuestionsModal();
-            
-            // رسالة تأكيد
-            alert('تم إضافة السؤال بنجاح!');
-        }
-        
-        // خلط المصفوفة
-        function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
-            }
-            return array;
-        }
-        
-        // تهيئة اللعبة عند تحميل الصفحة
-        window.addEventListener('DOMContentLoaded', initGame);
-    </script>
-</body>
-</html>
