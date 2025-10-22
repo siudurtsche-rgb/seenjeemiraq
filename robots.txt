@@ -1,0 +1,4 @@
+
+User-agent: *
+Allow: /
+Sitemap: https://siudurtsche-rgb.github.io/seenjeemiraq/sitemap.xml
